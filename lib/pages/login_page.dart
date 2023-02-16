@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:interview_work_universe_soft_it/providers/auth_provider.dart';
+import 'package:interview_work_universe_soft_it/router/route_manager.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -8,8 +12,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _usernameTextController = TextEditingController();
-
+  final TextEditingController _emailTextController = TextEditingController();
   final TextEditingController _passwordTextController = TextEditingController();
 
   bool _obscureText = true;
@@ -91,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 8,
                     ),
                     TextField(
-                      controller: _usernameTextController,
+                      controller: _emailTextController,
                       decoration: InputDecoration(
                         hintText: "Email or Phone Number",
                         hintStyle: const TextStyle(color: Color(0xffA7AAA8)),
@@ -109,18 +112,16 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          // ignore: prefer_const_constructors
-                          borderSide: BorderSide(
-                            color: const Color(0xffe0efe8),
+                          borderSide: const BorderSide(
+                            color: Color(0xffe0efe8),
                             width: 2,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(8),
-                          // ignore: prefer_const_constructors
-                          borderSide: BorderSide(
-                            color: const Color(0xffe0efe8),
+                          borderSide: const BorderSide(
+                            color: Color(0xffe0efe8),
                             width: 2,
                           ),
                         ),
@@ -224,9 +225,17 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
+              Consumer<AuthProvider>(
+                builder: (context, authProvider, _) => authProvider.hasError
+                    ? Text(
+                        "${authProvider.errorMessage}",
+                        style: const TextStyle(color: Colors.red),
+                      )
+                    : Container(),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(
-                    vertical: 23.0, horizontal: 23.0),
+                    vertical: 18.0, horizontal: 18.0),
                 child: SizedBox(
                   height: 50,
                   width: double.infinity,
@@ -234,8 +243,24 @@ class _LoginPageState extends State<LoginPage> {
                     style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.all(const Color(0xff187949))),
-                    onPressed: () {},
-                    child: const Text("Sign in"),
+                    onPressed: () async {
+                      String username = _emailTextController.text;
+                      String password = _passwordTextController.text;
+                      bool isLoginSucceed = await Provider.of<AuthProvider>(
+                              context,
+                              listen: false)
+                          .login(username, password);
+                      if (isLoginSucceed) {
+                        context.goNamed(RouteNames.massagesPage);
+                      }
+                    },
+                    child: Consumer<AuthProvider>(
+                        builder: (context, authProvider, _) =>
+                            authProvider.isLoading
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                : const Text("Sign in")),
                   ),
                 ),
               ),
@@ -264,7 +289,7 @@ class _LoginPageState extends State<LoginPage> {
                         color: Color(0xff187949), fontWeight: FontWeight.w700),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

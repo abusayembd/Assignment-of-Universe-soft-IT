@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:interview_work_universe_soft_it/pages/category_tab.dart';
+import 'package:interview_work_universe_soft_it/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class MassagesPage extends StatelessWidget {
   MassagesPage({
     super.key,
   });
 
+  final List<String> _menu = ["All Chats", "Online", "Group", "Spam"];
+
   final TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Material(
       child: SingleChildScrollView(
+        physics: const ScrollPhysics(),
         child: Column(
           children: [
             const SizedBox(
@@ -141,178 +147,45 @@ class MassagesPage extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              padding:
-                  const EdgeInsets.only(bottom: 3, top: 6, right: 25, left: 25),
-              height: 50.0,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 4,
-                itemBuilder: (context, index) => CategoryTab(
-                  title: "All Chats",
-                  isSelected: index == 0,
+            Consumer<AuthProvider>(
+              builder: (context, authProvider, _) => Container(
+                padding: const EdgeInsets.only(
+                    bottom: 3, top: 6, right: 25, left: 25),
+                height: 50.0,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _menu.length,
+                  itemBuilder: (context, index) => InkWell(
+                    onTap: () => authProvider.changeCategory(index),
+                    child: CategoryTab(
+                      title: _menu[index],
+                      isSelected: index == authProvider.selectedTabIndex,
+                    ),
+                  ),
                 ),
               ),
             ),
+            ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: 20,
+              itemBuilder: (_, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(left: 25, right: 25),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.only(bottom: 6),
+                    title: Text("data $index"),
+                    subtitle: const Text("I am subtitle"),
+                    leading: const Icon(Icons.thumb_up),
+                    trailing: const Icon(Icons.arrow_forward),
+                  ),
+                );
+              },
+            )
           ],
         ),
       ),
     );
   }
 }
-
-class CategoryTab extends StatelessWidget {
-  final String title;
-  final bool isSelected;
-  const CategoryTab({Key? key, required this.title, this.isSelected = false})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(right: 12.0),
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
-      width: 76.0,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(3.0),
-        color: isSelected ? const Color(0xff187949) : Colors.white,
-        border: Border.all(
-          color: const Color(0xff87b9a0),
-        ),
-      ),
-      child: Center(
-          child: Text(
-        title,
-        style: TextStyle(color: isSelected ? Colors.white : Colors.black),
-      )),
-    );
-  }
-}
-
-// class CategoryTab extends StatefulWidget {
-//   bool isSelected;
-//   CategoryTab({Key? key, required this.isSelected}) : super(key: key);
-
-//   @override
-//   State<CategoryTab> createState() => _CategoryTabState();
-// }
-
-// class _CategoryTabState extends State<CategoryTab> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.only(right: 25, left: 25),
-//       child: SizedBox(
-//         height: 50,
-//         width: double.infinity,
-//         child: Row(
-//           children: [
-//             Expanded(
-//               flex: 1,
-//               child: GestureDetector(
-//                 onTap: () {
-//                   setState(() {});
-//                 },
-//                 child: Container(
-//                   height: 50,
-//                   decoration: BoxDecoration(
-//                     color: widget.isSelected
-//                         ? const Color(0xff187949)
-//                         : Colors.white,
-//                     borderRadius: BorderRadius.circular(3),
-//                     border: Border.all(
-//                       color: const Color(0xff8abba2),
-//                     ),
-//                   ),
-//                   child: Center(
-//                     child: Text(
-//                       "All Chats",
-//                       style: TextStyle(
-//                           color:
-//                               widget.isSelected ? Colors.white : Colors.black),
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(
-//               width: 8,
-//             ),
-//             Expanded(
-//               flex: 1,
-//               child: Container(
-//                 height: 50,
-//                 decoration: BoxDecoration(
-//                   color: widget.isSelected
-//                       ? const Color(0xff187949)
-//                       : Colors.white,
-//                   borderRadius: BorderRadius.circular(3),
-//                   border: Border.all(
-//                     color: const Color(0xff8abba2),
-//                   ),
-//                 ),
-//                 child: Center(
-//                   child: Text(
-//                     "Online",
-//                     style: TextStyle(
-//                         color: widget.isSelected ? Colors.white : Colors.black),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(
-//               width: 8,
-//             ),
-//             Expanded(
-//               flex: 1,
-//               child: Container(
-//                 height: 50,
-//                 decoration: BoxDecoration(
-//                   color: widget.isSelected
-//                       ? const Color(0xff187949)
-//                       : Colors.white,
-//                   borderRadius: BorderRadius.circular(3),
-//                   border: Border.all(
-//                     color: const Color(0xff8abba2),
-//                   ),
-//                 ),
-//                 child: Center(
-//                   child: Text(
-//                     "Group",
-//                     style: TextStyle(
-//                         color: widget.isSelected ? Colors.white : Colors.black),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(
-//               width: 8,
-//             ),
-//             Expanded(
-//               flex: 1,
-//               child: Container(
-//                 height: 50,
-//                 decoration: BoxDecoration(
-//                   color: widget.isSelected
-//                       ? const Color(0xff187949)
-//                       : Colors.white,
-//                   borderRadius: BorderRadius.circular(3),
-//                   border: Border.all(
-//                     color: const Color(0xff8abba2),
-//                   ),
-//                 ),
-//                 child: Center(
-//                   child: Text(
-//                     "Spam",
-//                     style: TextStyle(
-//                         color: widget.isSelected ? Colors.white : Colors.black),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
