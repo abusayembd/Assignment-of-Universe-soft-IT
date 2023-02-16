@@ -10,6 +10,13 @@ class AuthProvider with ChangeNotifier {
   bool hasError = false;
   String? errorMessage;
   int selectedTabIndex = 0;
+  // Map<String, dynamic> userData1 = {};
+  // Map<String, dynamic> userData2 = {};
+  Map<String, dynamic> userData = {};
+
+  AuthProvider() {
+    loadAllUsers();
+  }
 
   Future<bool> login(String username, String password) async {
     isLoading = true;
@@ -41,12 +48,22 @@ class AuthProvider with ChangeNotifier {
   void loadAllUsers() async {
     http.Response res =
         await http.get(Uri.parse("https://reqres.in/api/users"));
+
     if (res.statusCode == 200) {
-      List allUsers = jsonDecode(res.body);
-      print(res.body);
+      userData.addAll(jsonDecode(res.body));
+      print(userData);
     } else {
       print("error");
     }
     notifyListeners();
+    // http.Response res2 =
+    //     await http.get(Uri.parse("https://reqres.in/api/users?page=2"));
+    // if (res2.statusCode == 200) {
+    //   userData.addAll(jsonDecode(res2.body));
+    //   print(userData);
+    // } else {
+    //   print("error");
+    // }
+    // notifyListeners();
   }
 }

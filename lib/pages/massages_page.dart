@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interview_work_universe_soft_it/pages/category_tab.dart';
+import 'package:interview_work_universe_soft_it/pages/details_page.dart';
 import 'package:interview_work_universe_soft_it/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -165,23 +166,63 @@ class MassagesPage extends StatelessWidget {
                 ),
               ),
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: 20,
-              itemBuilder: (_, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(left: 25, right: 25),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.only(bottom: 6),
-                    title: Text("data $index"),
-                    subtitle: const Text("I am subtitle"),
-                    leading: const Icon(Icons.thumb_up),
-                    trailing: const Icon(Icons.arrow_forward),
-                  ),
-                );
-              },
+            Consumer<AuthProvider>(
+              builder: (context, authProvider, _) => ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: authProvider.userData.length,
+                itemBuilder: (_, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 25, right: 25),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.only(bottom: 6),
+                      title: Text("data $index"),
+                      subtitle: const Text("I am subtitle"),
+                      leading: Container(
+                        height: 50,
+                        width: 50,
+                        margin: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          image: const DecorationImage(
+                              image: AssetImage("assets/profile.jpg"),
+                              fit: BoxFit.cover),
+                        ),
+                      ),
+                      trailing: Column(
+                        children: [
+                          const Text("02:29"),
+                          // ignore: prefer_const_constructors
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Container(
+                            height: 18,
+                            width: 18,
+                            decoration: BoxDecoration(
+                                color: const Color(0xffcbe7d8),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: const Center(
+                              child: Text(
+                                "2",
+                                style: TextStyle(color: Colors.green),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const DetailsPage(),
+                            ));
+                      },
+                    ),
+                  );
+                },
+              ),
             )
           ],
         ),
