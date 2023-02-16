@@ -52,6 +52,8 @@ class AuthProvider with ChangeNotifier {
     if (res.statusCode == 200) {
       userData.addAll(jsonDecode(res.body));
       print(userData);
+      print(userData);
+      print(userData["data"]["first_name"]);
     } else {
       print("error");
     }

@@ -138,7 +138,10 @@ class MassagesPage extends StatelessWidget {
                               onTap: () {
                                 print("Tapped the filter");
                               },
-                              child: const Icon(Icons.calendar_view_day),
+                              child: const Icon(
+                                Icons.filter_list_outlined,
+                                color: Colors.white,
+                              ),
                             ),
                           ],
                         ),
@@ -177,16 +180,21 @@ class MassagesPage extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 25, right: 25),
                     child: ListTile(
                       contentPadding: const EdgeInsets.only(bottom: 6),
-                      title: Text("data $index"),
+                      title: Text(
+                        authProvider.userData['data'][index]['first_name'] +
+                            ' ' +
+                            authProvider.userData['data'][0]['last_name'],
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       subtitle: const Text("I am subtitle"),
                       leading: Container(
                         height: 50,
                         width: 50,
-                        margin: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25),
-                          image: const DecorationImage(
-                              image: AssetImage("assets/profile.jpg"),
+                          image: DecorationImage(
+                              image: NetworkImage(authProvider.userData['data']
+                                  [index]['avatar']),
                               fit: BoxFit.cover),
                         ),
                       ),
